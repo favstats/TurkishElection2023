@@ -175,13 +175,6 @@ source("utils.R")
 # election_dat30 %>% count(party, sort = T)
 ```
 
-```{r, eval = F}
-election_dat30 %>% 
-  filter(is_exclusion) %>% 
-  # filter(party == "PvdA") %>% 
-  arrange(desc(total_spend_pct))
-  count(party, sort =T)
-```
 
 
 ## Methodology
@@ -1219,7 +1212,7 @@ election_dat7 %>%
 
 ### `r last30days_string` (Last 30 days) {.tabset .tabset-fade .tabset-pills}
 
-#### Regions
+#### Provinces
 
 ```{r,fig.width=10, fig.height=8}
 library(treemap)
@@ -1269,6 +1262,157 @@ tm <- treemap(region_dat, index = c("party", "region"),
 
 ```
 
+```{r}
+geo <- sf::st_read("https://raw.githubusercontent.com/alpers/Turkey-Maps-GeoJSON/master/tr-cities-kktc-airports.json", quiet = T)
+```
+
+
+#### Provinces (Maps) {.tabset .tabset-fade .tabset-pills}
+
+##### AKP
+
+
+```{r, eval = T, fig.width=15, fig.height=10, dpi=900}
+# election_dat30 %>% 
+#   filter(is_exclusion) %>% 
+#   # filter(party == "PvdA") %>% 
+#   arrange(desc(total_spend_pct))
+#   count(party, sort =T)
+#   
+# election_dat30 %>% 
+#   filter(value == "Elon Musk")
+
+# geojs <- geojson::("https://raw.githubusercontent.com/alpers/Turkey-Maps-GeoJSON/master/tr-cities-kktc-airports.json")
+
+
+
+# plot(geo)
+# geo %>% 
+#   # select(name, number) %>% 
+#   as_tibble() %>% 
+#   filter(is.na(code)) %>% 
+#   filter(number != 82) %>% 
+#   arrange(number)
+
+AKP_dat <- election_dat30 %>% 
+  filter(type == "location") %>% 
+  filter(location_type == "regions") %>% 
+  mutate(value = str_remove_all(value, " Province, Turkey") %>% str_trim %>% str_squish) %>%
+  rename(name = value) %>% 
+  filter(party == "AKP") %>% 
+  filter(!is_exclusion) %>%
+  mutate(total_spend = total_spend_formatted*total_spend_pct) %>% 
+  group_by(name) %>% 
+  summarize(total_spend = sum(total_spend)) %>% 
+  right_join(geo) 
+  
+  
+ready_apk <- AKP_dat %>% 
+  filter(str_detect(name, "Havalimanı", negate = T)) %>% 
+  filter(number != 82) 
+
+ready_apk %>% 
+    ggplot(aes(geometry = geometry))  +
+    theme_void() +
+    colorspace::scale_fill_binned_sequential(palette = "Peach",
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend),
+            colour = "black", size = 0.1) +
+    # geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (₺)", barwidth = 15, barheight = 0.5)) +
+  coord_sf() +
+  geom_sf_label(data = ready_apk %>% distinct(total_spend, .keep_all = T) %>% drop_na(total_spend),
+                aes(label = paste0("₺",scales::comma_format()(round(total_spend))))) +
+  labs(title = "AKP Spending on Ads targeting Provinces") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+##### MHP
+
+
+```{r, eval = T, fig.width=15, fig.height=10, dpi=900}
+
+
+MHP_dat <- election_dat30 %>% 
+  filter(type == "location") %>% 
+  filter(location_type == "regions") %>% 
+  mutate(value = str_remove_all(value, " Province, Turkey") %>% str_trim %>% str_squish) %>%
+  rename(name = value) %>% 
+  filter(party == "MHP") %>% 
+  filter(!is_exclusion) %>%
+  mutate(total_spend = total_spend_formatted*total_spend_pct) %>% 
+  group_by(name) %>% 
+  summarize(total_spend = sum(total_spend)) %>% 
+  right_join(geo) 
+  
+  
+ready_mhp <- MHP_dat %>% 
+  filter(str_detect(name, "Havalimanı", negate = T)) %>% 
+  filter(number != 82) 
+
+ready_mhp %>% 
+    ggplot(aes(geometry = geometry))  +
+    theme_void() +
+    colorspace::scale_fill_binned_sequential(palette = "Peach",
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend),
+            colour = "black", size = 0.1) +
+    # geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (₺)", barwidth = 15, barheight = 0.5)) +
+  coord_sf() +
+  geom_sf_label(data = ready_mhp %>% distinct(total_spend, .keep_all = T) %>% drop_na(total_spend),
+                aes(label = paste0("₺",scales::comma_format()(round(total_spend))))) +
+  labs(title = "MHP Spending on Ads targeting Provinces") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+##### CHP
+
+
+```{r, eval = T, fig.width=15, fig.height=10, dpi=900}
+
+
+CHP_dat <- election_dat30 %>% 
+  filter(type == "location") %>% 
+  filter(location_type == "regions") %>% 
+  mutate(value = str_remove_all(value, " Province, Turkey") %>% str_trim %>% str_squish) %>%
+  rename(name = value) %>% 
+  filter(party == "CHP") %>% 
+  filter(!is_exclusion) %>%
+  mutate(total_spend = total_spend_formatted*total_spend_pct) %>% 
+  group_by(name) %>% 
+  summarize(total_spend = sum(total_spend)) %>% 
+  right_join(geo) 
+  
+  
+ready_chp <- CHP_dat %>% 
+  filter(str_detect(name, "Havalimanı", negate = T)) %>% 
+  filter(number != 82) 
+
+ready_chp %>% 
+    ggplot(aes(geometry = geometry))  +
+    theme_void() +
+    colorspace::scale_fill_binned_sequential(palette = "Peach",
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend),
+            colour = "black", size = 0.1) +
+    # geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (₺)", barwidth = 15, barheight = 0.5)) +
+  coord_sf() +
+  geom_sf_label(data = ready_chp %>% distinct(total_spend, .keep_all = T) %>% drop_na(total_spend),
+                aes(label = paste0("₺",scales::comma_format()(round(total_spend))))) +
+  labs(title = "CHP Spending on Ads targeting Provinces") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
 
 #### Cities
 
@@ -1325,7 +1469,7 @@ tm <- treemap(region_dat, index = c("party", "region"),
 
 ### `r last30days_string` (Last 30 days) {.tabset .tabset-fade .tabset-pills}
 
-#### Regions
+#### Provinces
 
 ```{r,fig.width=10, fig.height=8}
 library(treemap)
@@ -1374,6 +1518,154 @@ tm <- treemap(region_dat, index = c("party", "region"),
 
 
 ```
+
+#### Provinces (Maps) {.tabset .tabset-fade .tabset-pills}
+
+##### AKP
+
+
+```{r, eval = T, fig.width=15, fig.height=10, dpi=900}
+# election_dat30 %>% 
+#   filter(is_exclusion) %>% 
+#   # filter(party == "PvdA") %>% 
+#   arrange(desc(total_spend_pct))
+#   count(party, sort =T)
+#   
+# election_dat30 %>% 
+#   filter(value == "Elon Musk")
+
+# geojs <- geojson::("https://raw.githubusercontent.com/alpers/Turkey-Maps-GeoJSON/master/tr-cities-kktc-airports.json")
+
+
+
+# plot(geo)
+# geo %>% 
+#   # select(name, number) %>% 
+#   as_tibble() %>% 
+#   filter(is.na(code)) %>% 
+#   filter(number != 82) %>% 
+#   arrange(number)
+
+AKP_dat <- election_dat30 %>% 
+  filter(type == "location") %>% 
+  filter(location_type == "regions") %>% 
+  mutate(value = str_remove_all(value, " Province, Turkey") %>% str_trim %>% str_squish) %>%
+  rename(name = value) %>% 
+  filter(party == "AKP") %>% 
+  filter(is_exclusion) %>%
+  mutate(total_spend = total_spend_formatted*total_spend_pct) %>% 
+  group_by(name) %>% 
+  summarize(total_spend = sum(total_spend)) %>% 
+  right_join(geo) 
+  
+  
+ready_apk <- AKP_dat %>% 
+  filter(str_detect(name, "Havalimanı", negate = T)) %>% 
+  filter(number != 82) 
+
+ready_apk %>% 
+    ggplot(aes(geometry = geometry))  +
+    theme_void() +
+    colorspace::scale_fill_binned_sequential(palette = "Peach",
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend),
+            colour = "black", size = 0.1) +
+    # geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (₺)", barwidth = 15, barheight = 0.5)) +
+  coord_sf() +
+  geom_sf_label(data = ready_apk %>% distinct(total_spend, .keep_all = T) %>% drop_na(total_spend),
+                aes(label = paste0("₺",scales::comma_format()(round(total_spend))))) +
+  labs(title = "AKP Spending on Ads excluding Provinces") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+##### MHP
+
+
+```{r, eval = T, fig.width=15, fig.height=10, dpi=900}
+
+
+MHP_dat <- election_dat30 %>% 
+  filter(type == "location") %>% 
+  filter(location_type == "regions") %>% 
+  mutate(value = str_remove_all(value, " Province, Turkey") %>% str_trim %>% str_squish) %>%
+  rename(name = value) %>% 
+  filter(party == "MHP") %>% 
+  filter(is_exclusion) %>%
+  mutate(total_spend = total_spend_formatted*total_spend_pct) %>% 
+  group_by(name) %>% 
+  summarize(total_spend = sum(total_spend)) %>% 
+  right_join(geo) 
+  
+  
+ready_mhp <- MHP_dat %>% 
+  filter(str_detect(name, "Havalimanı", negate = T)) %>% 
+  filter(number != 82) 
+
+ready_mhp %>% 
+    ggplot(aes(geometry = geometry))  +
+    theme_void() +
+    colorspace::scale_fill_binned_sequential(palette = "Peach",
+            na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend),
+            colour = "black", size = 0.1) +
+    # geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (₺)", barwidth = 15, barheight = 0.5)) +
+  coord_sf() +
+  geom_sf_label(data = ready_mhp %>% distinct(total_spend, .keep_all = T) %>% drop_na(total_spend),
+                aes(label = paste0("₺",scales::comma_format()(round(total_spend))))) +
+  labs(title = "MHP Spending on Ads excluding Provinces") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
+##### CHP
+
+
+```{r, eval = T, fig.width=15, fig.height=10, dpi=900}
+
+
+CHP_dat <- election_dat30 %>% 
+  filter(type == "location") %>% 
+  filter(location_type == "regions") %>% 
+  mutate(value = str_remove_all(value, " Province, Turkey") %>% str_trim %>% str_squish) %>%
+  rename(name = value) %>% 
+  filter(party == "CHP") %>% 
+  filter(is_exclusion) %>%
+  mutate(total_spend = total_spend_formatted*total_spend_pct) %>% 
+  group_by(name) %>% 
+  summarize(total_spend = sum(total_spend)) %>% 
+  right_join(geo) 
+  
+  
+ready_chp <- CHP_dat %>% 
+  filter(str_detect(name, "Havalimanı", negate = T)) %>% 
+  filter(number != 82) 
+
+ready_chp %>% 
+    ggplot(aes(geometry = geometry))  +
+    theme_void() +
+    # colorspace::(palette = "Peach",
+    #         na.value = "lightgrey")   +
+    geom_sf(aes(fill = total_spend),
+            colour = "black", size = 0.1) +
+    # geom_sf(data = prov, color = "black", fill = NA)  +
+  # geom_sf_label(data = prov, aes(label = name)) +
+    theme(legend.position = "bottom")+ 
+    guides(fill = guide_colourbar(title = "Spend (₺)", barwidth = 15, barheight = 0.5)) +
+  coord_sf() +
+  geom_sf_label(data = ready_chp %>% distinct(total_spend, .keep_all = T) %>% drop_na(total_spend),
+                aes(label = paste0("₺",scales::comma_format()(round(total_spend))))) +
+  labs(title = "CHP Spending on Ads excluding Provinces") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
 
 
 #### Cities
