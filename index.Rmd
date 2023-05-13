@@ -62,8 +62,10 @@ library(tidyverse)
 
 
 color_dat <- tibble(
-  colors = c("#ed1c24", "#ff9901", "#870000", "#3db5e6", "#388537", "#0069a7"),
-  party = c("CHP", "AKP", "MHP", "İYİ", "YSP", "DEVA"))
+  colors = c("#ed1c24", "#ff9901", "#870000", "#3db5e6", "#388537", "#0069a7",
+             "#373736", "#0d5da6", "#b10a11", "#ff2700"),
+  party = c("CHP", "AKP", "MHP", "İYİ", "YSP", "DEVA",
+            "ATA Alliance", "Memleket Partisi", "YRP", "BBP"))
 
 
 # color_dat
@@ -89,6 +91,20 @@ scale_color_parties <- function(...){
 #   # select(internal_id, page_name) %>% 
 #   # distinct(internal_id, .keep_all = T)
 #   count(party, sort = T)
+
+
+# election_dat30  %>% 
+#   mutate(party = case_when(
+#     str_detect(page_name, "\\bDEVA\\b|\\bDeva\\b|Ali Babacan")  ~ "DEVA",
+#     str_detect(page_name, "Yeniden Refah Partisi|Yeniden REFAH Partisi|Şükrü Yılmaz")  ~ "YRP",
+#     str_detect(page_name, "ıdvan Eşin|Osman Seçgin")  ~ "BBP",
+# 
+#     
+#     # str_detect(party, "Diğ")  ~ "Other",
+#     T ~ party  )) %>%
+#   filter(party == "Diğ") %>% 
+#   distinct(page_name, .keep_all = T)
+#   count(par)
 ```
 
 
@@ -101,16 +117,28 @@ scale_color_parties <- function(...){
 election_dat30 <- readRDS("data/election_dat30.rds") %>% 
     rename(internal_id = page_id)  %>% 
   mutate(party = case_when(
-    str_detect(page_name, "\\bDEVA\\b|\\bDeva\\b")  ~ "DEVA",
+    str_detect(page_name, "\\bDEVA\\b|\\bDeva\\b|Ali Babacan")  ~ "DEVA",
+    str_detect(page_name, "Yeniden Refah Partisi|Yeniden REFAH Partisi|Şükrü Yılmaz")  ~ "YRP",
+    str_detect(party, "ATA")  ~ "ATA Alliance",
+    str_detect(party, "Mem")  ~ "Memleket Partisi",
+
+    str_detect(page_name, "ıdvan Eşin|Osman Seçgin")  ~ "BBP",
     T ~ party  ))  %>% 
-    filter(!(party %in% c("Diğ", "Bağ", "Mem", "ATA")))
+    filter(!(party %in% c("Bağ", "Diğ")))
+# , "Mem", "ATA"
+
+ 
 
 election_dat7 <- readRDS("data/election_dat7.rds") %>% 
-    rename(internal_id = page_id) %>% 
+    rename(internal_id = page_id)  %>% 
   mutate(party = case_when(
-    str_detect(page_name, "\\bDEVA\\b|\\bDeva\\b")  ~ "DEVA",
+    str_detect(page_name, "\\bDEVA\\b|\\bDeva\\b|Ali Babacan")  ~ "DEVA",
+    str_detect(page_name, "Yeniden Refah Partisi|Yeniden REFAH Partisi|Şükrü Yılmaz")  ~ "YRP",
+    str_detect(page_name, "ıdvan Eşin|Osman Seçgin")  ~ "BBP",
+    str_detect(party, "ATA")  ~ "ATA Alliance",
+    str_detect(party, "Mem")  ~ "Memleket Partisi",
     T ~ party  ))  %>% 
-    filter(!(party %in% c("Diğ", "Bağ", "Mem", "ATA")))
+    filter(!(party %in% c("Bağ", "Diğ")))
 
 
 fin <- (as.Date(election_dat30$ds[1])-lubridate::days(1))
@@ -566,56 +594,11 @@ add_ribbons("AKP", "#ff9901") %>%
 add_ribbons("MHP", "#870000") %>%
 add_ribbons("İYİ", "#3db5e6") %>%
 add_ribbons("YSP", "#388537") %>%
-add_ribbons("DEVA", "#0069a7") #%>%
-# add_ribbons("HGI", "#9A6324") %>%
-# add_ribbons("LP", "#fffac8") %>%
-# add_ribbons("Prava Crna Gora", "#800000")
-  # tab_options(table.width = pct(100))  #%>%
-  # tab_style(
-  #   style = cell_borders(
-  #     sides = c("left"),
-  #     color = "#ef3e3e",
-  #     weight = px(18.5),
-  #     style = "solid"
-  #   ),
-  #   locations = cells_body(
-  #     columns = `Numero di inserzionisti`,
-  #     rows = "Coalizione di centro-sinistra"
-  #   )) %>%
-  # tab_style(
-  #   style = cell_borders(
-  #     sides = c("left"),
-  #     color = "#0a6be1",
-  #     weight = px(18.5),
-  #     style = "solid"
-  #   ),
-  #   locations = cells_body(
-  #     columns = `Numero di inserzionisti`,
-  #     rows = "Coalizione di centro-destra"
-  #   ))%>%
-  # tab_style(
-  #   style = cell_borders(
-  #     sides = c("left"),
-  #     color = "#0039aa",
-  #     weight = px(18.5),
-  #     style = "solid"
-  #   ),
-  #   locations = cells_body(
-  #     columns = `Numero di inserzionisti`,
-  #     rows = "Terzo Polo"
-  #   ))%>%
-  # tab_style(
-  #   style = cell_borders(
-  #     sides = c("bottom"),
-  #     color = "lightgrey",
-  #     weight = px(0.5),
-  #     style = "solid"
-  #   ),
-  #   locations = cells_body(
-  #     columns = everything(),
-  #     rows = everything()
-  #   ))
-  # 
+add_ribbons("DEVA", "#0069a7") %>%
+add_ribbons("ATA Alliance", "#373736")%>%
+add_ribbons("Memleket Partisi", "#0d5da6")%>%
+add_ribbons("YRP", "#b10a11")%>%
+add_ribbons("BBP", "#ff2700")
 
 
 
@@ -650,7 +633,11 @@ add_ribbons("AKP", "#ff9901") %>%
 add_ribbons("MHP", "#870000") %>%
 add_ribbons("İYİ", "#3db5e6") %>%
 add_ribbons("YSP", "#388537") %>%
-add_ribbons("DEVA", "#0069a7") 
+add_ribbons("DEVA", "#0069a7") %>%
+add_ribbons("ATA Alliance", "#373736")%>%
+add_ribbons("Memleket Partisi", "#0d5da6")%>%
+add_ribbons("YRP", "#b10a11")%>%
+add_ribbons("BBP", "#ff2700")
 
 ```
 
@@ -732,7 +719,7 @@ gg %>%
 #### By Party
 
 
-```{r, fig.width=12, fig.height=8, dpi=300}
+```{r, fig.width=12, fig.height=9, dpi=300}
 
 
 col_each30 <- election_dat30 %>% 
@@ -889,7 +876,7 @@ gg %>%
 
 #### By Party
 
-```{r, fig.width=12, fig.height=8, dpi=300}
+```{r, fig.width=12, fig.height=9, dpi=300}
 
 col_each7 <- election_dat7 %>% 
     mutate(total_spend = total_spend_formatted) %>% 
@@ -907,9 +894,9 @@ plot_geography(col_each7) +
 
 ```
 
-## Top Targeted Audiences {.tabset .tabset-fade .tabset-pills}
+## Top Targeted (Detailed) Audiences {.tabset .tabset-fade .tabset-pills}
 
-Here, we show the *top targeted audiences* for each party (ranked by amount of Turkish Lira spend). Most (but not all) of these audiences are “interest” audiences, i.e. the parties targeted people interested in “Books” or “Politics”.
+Here, we show the *top targeted audiences* for each party for the "detailed" targeting that Meta offers (ranked by amount of Turkish Lira spend). Most (but not all) of these audiences are “interest” audiences, i.e. the parties targeted people interested in “Books” or “Politics”.
 
 ```{r}
 
@@ -983,7 +970,7 @@ contested_dat7 <- interest_targeting7 %>%
 
 ```
 
-```{r,fig.width=9, fig.height=5,eval=F, dpi = 300}
+```{r,fig.width=9, fig.height=7,eval=F, dpi = 300, eval = F}
 library(tidytext)
  interest_targeting30 %>% 
   filter(is_exclusion) %>% 
@@ -994,6 +981,8 @@ library(tidytext)
   group_by(party) %>% 
   mutate(total_spenderino = sum(total_spend)) %>% 
   mutate(perc = total_spend/total_spenderino)  %>%
+      mutate(value = str_wrap(value, width = 20)) %>% 
+
     mutate(value = reorder_within(value, total_spend, party)) %>% 
     # filter(party == "BBB") %>%
     # slice(1:30) %>%
@@ -1005,8 +994,8 @@ library(tidytext)
   
     scale_x_reordered()  +
   ggthemes::theme_hc() +
-  labs(x = "Exclusion criteria\n", y = "Budget spent on targeting method (in Turkish Lira)", title = "Top Excluded Audiences by Party", subtitle = "On Meta you can exclude audiences that you don't want to see your ads\n", 
-       caption = "\nSource: Meta Ad Library and data compiled by Who Targets Me. Data Viz: Fabio Votta (@favstats).  Timeframe: 12th Feb - 13th Mar 2023.") +
+  labs(x = "Exclusion criteria\n", y = "Budget spent on targeting method (in Turkish Lira)", #title = "Top Excluded Audiences by Party", subtitle = "On Meta you can exclude audiences that you don't want to see your ads\n", 
+       caption = "\nSource: Meta Ad Library and data compiled by Who Targets Me. Data Viz: Fabio Votta (@favstats).") +
   theme(plot.title = element_text(size = 38, face = "bold", hjust = 0.5), text=element_text(family="mono", face = "bold"), plot.caption = element_text(), plot.subtitle = element_text(hjust = 0.5, size = 20)) +
   theme(legend.position = "none") +
   facet_wrap(~party, scales = "free")
@@ -1028,7 +1017,7 @@ contested_dat30  %>%
 ```
 
 
-```{r, fig.width=14, fig.height=7, dpi=300}
+```{r, fig.width=14, fig.height=9, dpi=300}
 contested_dat30 %>% 
     group_by(party) %>%
     arrange(desc(perc)) %>% 
@@ -1050,7 +1039,7 @@ contested_dat30 %>%
 
 ### `r last7days_string` (Last 7 days)
 
-```{r, fig.width=14, fig.height=7, dpi=300}
+```{r, fig.width=14, fig.height=9, dpi=300}
 contested_dat7 %>% 
     group_by(party) %>%
     arrange(desc(perc)) %>% 
@@ -1185,9 +1174,11 @@ contested_dat %>% #count(party) %>% pull(party) %>% unique() %>% dput()
 # FvD	177		
 # Ja21	149	
 # main_parties <- c("VVD", "FvD", "GroenLinks", "PvdA", "CDA", "SP", "PVV", "D66", "PvdD", "Ja21", "CDA")
+remove_parties <- c("YRP", "DEVA")
 # debugonce(get_contested_graph)
 election_dat30 %>% 
     # filter(party %in% main_parties) %>% 
+    filter(!(party %in% remove_parties)) %>%
     get_contested_graph()  +
     scale_fill_parties()
 
@@ -1201,6 +1192,7 @@ election_dat30 %>%
 
 election_dat7 %>% 
     # filter(party %in% main_parties) %>% 
+    filter(!(party %in% remove_parties)) %>%
     get_contested_graph() +
     scale_fill_parties()
 ```
@@ -1259,6 +1251,9 @@ tm <- treemap(region_dat, index = c("party", "region"),
               palette = the_colors)
 
 
+# read_csv("data/PoliticalAds.csv") %>% 
+#   filter(CountryCode == "turkey")
+#   count(CountryCode, sort = T)
 
 ```
 
@@ -1413,6 +1408,9 @@ ready_chp %>%
   labs(title = "CHP Spending on Ads targeting Provinces") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
+
+
+
 
 #### Cities
 
@@ -2126,6 +2124,9 @@ election_dat30 %>%
      # mutate(coalition = fct_relevel(coalition, c("Coalizione di centro-sinistra",
      #                              "Terzo Polo",
      #                              "Coalizione di centro-destra"))) %>% 
+    group_by(party) %>% 
+    arrange(desc(perc)) %>% 
+    slice(1:20) %>% 
     mutate(value = fct_reorder(value, perc)) %>% 
     ggplot(aes(value, perc, fill = party)) +
     geom_col(alpha = 0.8) +
