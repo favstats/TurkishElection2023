@@ -224,6 +224,7 @@ To better understand the election, we kept only advertisers who:
 #     filter(party != "And")
 
 total_spend_id <- election_dat30 %>% 
+    filter(main_currency == "TRY") %>% 
   distinct(internal_id, .keep_all = T) %>% 
   group_by(party) %>% 
   summarize(total_spend_formatted = sum(total_spend_formatted)) %>% 
@@ -347,11 +348,13 @@ total_spend_id <- election_dat30 %>%
 
 ```{r}
 sum30 <- election_dat30 %>% 
+    filter(main_currency == "TRY") %>% 
     distinct(internal_id, .keep_all = T) %>% 
     summarize(total_spend_formatted = sum(total_spend_formatted),
               total_num_ads = sum(total_num_ads))
 
 sum7 <- election_dat7 %>% 
+    filter(main_currency == "TRY") %>% 
     distinct(internal_id, .keep_all = T) %>% 
     summarize(total_spend_formatted = sum(total_spend_formatted),
               total_num_ads = sum(total_num_ads))
@@ -528,6 +531,7 @@ get_table_dat <- function(x, var) {
     
 
 x %>% 
+    filter(main_currency == "TRY") %>% 
         distinct(internal_id, .keep_all = T) %>% 
     group_by({{ var }}) %>% 
     summarize(total_num_ads = n()) %>% 
@@ -536,6 +540,7 @@ x %>%
     pivot_wider(names_from = {{ var }}, values_from = total_num_ads) %>% 
     mutate(`Coalizione/Partito` = "Number of Advertisers") %>% 
     bind_rows(x %>% 
+    filter(main_currency == "TRY") %>% 
         distinct(internal_id, .keep_all = T) %>% 
         group_by({{ var }}) %>% 
         arrange(desc(total_spend_formatted)) %>% 
@@ -670,7 +675,7 @@ gg <- coltototal30 %>%
     target == "countries" ~ "GEOGRAPHY: Entire Country",
     target == "regions" ~ "GEOGRAPHY: Regions",
     target == "lookalike_audience" ~ "Lookalike Audiences",
-    target == "interest" ~ "Interests",
+    target == "interest" ~ "Detailed",
     target == "age" ~ "Age",
     target == "zips" ~ "GEOGRAPHY: Postal Code",
     target == "CITY" ~ "GEOGRAPHY: City",
@@ -754,7 +759,7 @@ gg <- x %>%
     target == "countries" ~ "GEOGRAPHY: Entire Country",
     target == "regions" ~ "GEOGRAPHY: Regions",
     target == "lookalike_audience" ~ "Lookalike Audiences",
-    target == "interest" ~ "Interests",
+    target == "interest" ~ "Detailed",
     target == "age" ~ "Age",
     target == "zips" ~ "GEOGRAPHY: Postal Code",
     target == "CITY" ~ "GEOGRAPHY: City",
@@ -828,7 +833,7 @@ gg <- coltototal7 %>%
     target == "countries" ~ "GEOGRAPHY: Entire Country",
     target == "regions" ~ "GEOGRAPHY: Regions",
     target == "lookalike_audience" ~ "Lookalike Audiences",
-    target == "interest" ~ "Interests",
+    target == "interest" ~ "Detailed",
     target == "age" ~ "Age",
     target == "zips" ~ "GEOGRAPHY: Postal Code",
     target == "CITY" ~ "GEOGRAPHY: City",
