@@ -8,52 +8,52 @@ library(tidyverse)
 
 tstamp <- Sys.time()
 
-more_data <- dir("data/reports", full.names = T) %>%
-    map_dfr(~{print(.x)
-        yo <- read.csv(.x) %>% mutate(path = .x)
-        return(yo)
-            }) %>%
-    mutate(date_produced = str_remove_all(path, "data/reports/FacebookAdLibraryReport_|_ME_yesterday_advertisers\\.csv")) %>%
-    mutate(date_produced = lubridate::ymd(date_produced)) %>%
-    janitor::clean_names()%>% #rename(advertiser_id = page_id) %>%
-    mutate(spend = readr::parse_number(amount_spent_eur)) %>%
-    mutate(spend = ifelse(spend == 100, 50, spend)) %>%
-    distinct(page_id, .keep_all = T)  %>%
-  mutate(party1 = case_when(
-    str_detect(page_name, "\\bDrugo\\b") ~ "Drugo",
-    str_detect(page_name, "\\bDCG\\b") ~ "DCG",
-    str_detect(page_name, "\\bDF\\b") ~ "DF",
-    str_detect(page_name, "\\bURA\\b") ~ "URA",
-    str_detect(page_name, "\\bDPS\\b") ~"DPS",
-    str_detect(page_name, "\\bSDP\\b") ~ "SDP",
-    str_detect(page_name, "\\bUCG\\b") ~ "UCG",
-    str_detect(page_name, "\\bVlada Crne Gore\\b") ~ "Vlada Crne Gore",
-    str_detect(page_name, "\\bDEMOS\\b") ~ "DEMOS",
-    str_detect(page_name, "\\bHGI\\b") ~ "HGI",
-    str_detect(page_name, "\\bLP\\b") ~ "LP",
-    str_detect(page_name, "\\bPrava Crna Gora\\b") ~ "Prava Crna Gora",
-    T ~ NA_character_
-  ))%>%
-    mutate(party2 = case_when(
-      str_detect(disclaimer, "\\bDrugo\\b") ~ "Drugo",
-      str_detect(disclaimer, "\\bDCG\\b") ~ "DCG",
-      str_detect(disclaimer, "\\bDF\\b") ~ "DF",
-      str_detect(disclaimer, "\\bURA\\b") ~ "URA",
-      str_detect(disclaimer, "\\bDPS\\b") ~"DPS",
-      str_detect(disclaimer, "\\bSDP\\b") ~ "SDP",
-      str_detect(disclaimer, "\\bUCG\\b") ~ "UCG",
-      str_detect(disclaimer, "\\bVlada Crne Gore\\b") ~ "Vlada Crne Gore",
-      str_detect(disclaimer, "\\bDEMOS\\b") ~ "DEMOS",
-      str_detect(disclaimer, "\\bHGI\\b") ~ "HGI",
-      str_detect(disclaimer, "\\bLP\\b") ~ "LP",
-      str_detect(disclaimer, "\\bPrava Crna Gora\\b") ~ "Prava Crna Gora",
-      T ~ NA_character_
-    )) %>%
-    mutate(party = ifelse(is.na(party1), party2, party1)) %>%
-    drop_na(party) %>%
-    distinct(page_id, .keep_all = T) %>%
-    filter(str_detect(page_name, "Global Space Conference on Climate Change|de Alliantie|PvdA - GroenLinks", negate = T)) %>%
-    mutate(page_id = as.character(page_id))
+# more_data <- dir("data/reports", full.names = T) %>%
+#     map_dfr(~{print(.x)
+#         yo <- read.csv(.x) %>% mutate(path = .x)
+#         return(yo)
+#             }) %>%
+#     mutate(date_produced = str_remove_all(path, "data/reports/FacebookAdLibraryReport_|_ME_yesterday_advertisers\\.csv")) %>%
+#     mutate(date_produced = lubridate::ymd(date_produced)) %>%
+#     janitor::clean_names()%>% #rename(advertiser_id = page_id) %>%
+#     mutate(spend = readr::parse_number(amount_spent_eur)) %>%
+#     mutate(spend = ifelse(spend == 100, 50, spend)) %>%
+#     distinct(page_id, .keep_all = T)  %>%
+#   mutate(party1 = case_when(
+#     str_detect(page_name, "\\bDrugo\\b") ~ "Drugo",
+#     str_detect(page_name, "\\bDCG\\b") ~ "DCG",
+#     str_detect(page_name, "\\bDF\\b") ~ "DF",
+#     str_detect(page_name, "\\bURA\\b") ~ "URA",
+#     str_detect(page_name, "\\bDPS\\b") ~"DPS",
+#     str_detect(page_name, "\\bSDP\\b") ~ "SDP",
+#     str_detect(page_name, "\\bUCG\\b") ~ "UCG",
+#     str_detect(page_name, "\\bVlada Crne Gore\\b") ~ "Vlada Crne Gore",
+#     str_detect(page_name, "\\bDEMOS\\b") ~ "DEMOS",
+#     str_detect(page_name, "\\bHGI\\b") ~ "HGI",
+#     str_detect(page_name, "\\bLP\\b") ~ "LP",
+#     str_detect(page_name, "\\bPrava Crna Gora\\b") ~ "Prava Crna Gora",
+#     T ~ NA_character_
+#   ))%>%
+#     mutate(party2 = case_when(
+#       str_detect(disclaimer, "\\bDrugo\\b") ~ "Drugo",
+#       str_detect(disclaimer, "\\bDCG\\b") ~ "DCG",
+#       str_detect(disclaimer, "\\bDF\\b") ~ "DF",
+#       str_detect(disclaimer, "\\bURA\\b") ~ "URA",
+#       str_detect(disclaimer, "\\bDPS\\b") ~"DPS",
+#       str_detect(disclaimer, "\\bSDP\\b") ~ "SDP",
+#       str_detect(disclaimer, "\\bUCG\\b") ~ "UCG",
+#       str_detect(disclaimer, "\\bVlada Crne Gore\\b") ~ "Vlada Crne Gore",
+#       str_detect(disclaimer, "\\bDEMOS\\b") ~ "DEMOS",
+#       str_detect(disclaimer, "\\bHGI\\b") ~ "HGI",
+#       str_detect(disclaimer, "\\bLP\\b") ~ "LP",
+#       str_detect(disclaimer, "\\bPrava Crna Gora\\b") ~ "Prava Crna Gora",
+#       T ~ NA_character_
+#     )) %>%
+#     mutate(party = ifelse(is.na(party1), party2, party1)) %>%
+#     drop_na(party) %>%
+#     distinct(page_id, .keep_all = T) %>%
+#     filter(str_detect(page_name, "Global Space Conference on Climate Change|de Alliantie|PvdA - GroenLinks", negate = T)) %>%
+#     mutate(page_id = as.character(page_id))
 
 
 source("utils.R")
