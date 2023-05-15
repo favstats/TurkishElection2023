@@ -107,6 +107,12 @@ scale_color_parties <- function(...){
 #   count(par)
 ```
 
+```{r, eval =F }
+election_dat30 %>% 
+  filter(is.na(party)) %>% 
+  # count(party, sort = T) %>% 
+    count(internal_id, sort = T)
+```
 
 
 ```{r}
@@ -124,7 +130,8 @@ election_dat30 <- readRDS("data/election_dat30.rds") %>%
 
     str_detect(page_name, "ıdvan Eşin|Osman Seçgin")  ~ "BBP",
     T ~ party  ))  %>% 
-    filter(!(party %in% c("Bağ", "Diğ")))
+    filter(!(party %in% c("Bağ", "Diğ"))) %>% 
+  drop_na(party)
 # , "Mem", "ATA"
 
  
@@ -138,7 +145,8 @@ election_dat7 <- readRDS("data/election_dat7.rds") %>%
     str_detect(party, "ATA")  ~ "ATA Alliance",
     str_detect(party, "Mem")  ~ "Memleket Partisi",
     T ~ party  ))  %>% 
-    filter(!(party %in% c("Bağ", "Diğ")))
+    filter(!(party %in% c("Bağ", "Diğ"))) %>% 
+  drop_na(party)
 
 
 fin <- (as.Date(election_dat30$ds[1])-lubridate::days(1))
