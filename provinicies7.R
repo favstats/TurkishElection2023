@@ -18,7 +18,8 @@ more_data <- dir("data/reports", full.names = T) %>%
     janitor::clean_names()%>% #rename(advertiser_id = page_id) %>%
   # names
     mutate(spend = readr::parse_number(amount_spent_try)) %>%
-    mutate(spend = ifelse(spend == 100, 50, spend)) %>%
+    mutate(spend = ifelse(spend == 100, 50, spend)) %>% 
+    mutate(page_id = x_page_id) %>% 
     distinct(page_id, .keep_all = T)  %>%
   mutate(party1 = case_when(
     str_detect(page_name, "\\bCHP\\b") ~ "CHP",
@@ -80,7 +81,7 @@ dir.create("provincies/30")
 
 # internal_page_ids %>%
 #     count(party, sort = T) %>% View
-wtm_data <- read_csv("data/wtm-advertisers-tr-2023-05-12T18_26_47.898Z.csv") %>% #names
+wtm_data <- read_csv("data/wtm-advertisers-me-2023-03-17T19_13_31.851Z.csv") %>% #names
     select(page_id = advertisers_platforms.advertiser_platform_ref,
            page_name = name, party = entities.short_name)  %>%
     mutate(page_id = as.character(page_id)) 
@@ -125,7 +126,7 @@ all_dat <- #read_csv("nl_advertisers.csv") %>%
     select(-n)  
 
 all_dat %>% filter(source == "new") %>% View
-
+all_dat %>% filter(is.na(party))
 
 # all_dat %>%
 #     filter(party == "And") %>% View

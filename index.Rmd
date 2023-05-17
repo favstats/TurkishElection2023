@@ -215,7 +215,7 @@ source("utils.R")
 
 ## Methodology
 
-In collaboration with [Who Targets Me](https://whotargets.me/), we monitored over 185 Turkish political advertisers during the 2023 Turkish general election to better understand how campaigns use different targeting methods made available by Meta. To do this, we used data from the [Meta Ad Library](https://www.facebook.com/ads/library/), using the new 'Audience' data which gives some detail on how pages target their ads.
+In collaboration with [Who Targets Me](https://whotargets.me/), we monitored over 245 Turkish political advertisers during the 2023 Turkish general election to better understand how campaigns use different targeting methods made available by Meta. To do this, we used data from the [Meta Ad Library](https://www.facebook.com/ads/library/), using the new 'Audience' data which gives some detail on how pages target their ads.
 
 To better understand the election, we kept only advertisers who:
 
