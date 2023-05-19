@@ -19,7 +19,7 @@ more_data <- dir("data/reports", full.names = T) %>%
   # names
     mutate(spend = readr::parse_number(amount_spent_try)) %>%
     mutate(spend = ifelse(spend == 100, 50, spend)) %>% 
-    mutate(page_id = x_page_id) %>% 
+    # mutate(page_id = x_page_id) %>% 
     distinct(page_id, .keep_all = T)  %>%
   mutate(party1 = case_when(
     str_detect(page_name, "\\bCHP\\b") ~ "CHP",
@@ -81,7 +81,7 @@ dir.create("provincies/30")
 
 # internal_page_ids %>%
 #     count(party, sort = T) %>% View
-wtm_data <- read_csv("data/wtm-advertisers-me-2023-03-17T19_13_31.851Z.csv") %>% #names
+wtm_data <- read_csv("data/wtm-advertisers-tr-2023-05-17T16_56_49.020Z.csv") %>% #names
     select(page_id = advertisers_platforms.advertiser_platform_ref,
            page_name = name, party = entities.short_name)  %>%
     mutate(page_id = as.character(page_id)) 
