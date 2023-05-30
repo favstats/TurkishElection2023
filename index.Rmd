@@ -225,6 +225,8 @@ To better understand the election, we kept only advertisers who:
 
 > Note: Meta only provides 7, 30 and 90 days windows for the targeting data in their Ad Library. Meta's data also lags by a few days. We will update this report as soon as new data is available.
 
+**If you are looking for the targeting data for Round 1: [click here](https://refined-github-html-preview.kidonng.workers.dev/favstats/TurkishElection2023/raw/ce6281fe74b8f5a3f99c576c31bd95758cf80dec/index.html).**
+
 ### About Us
 
 <center>
