@@ -1340,55 +1340,55 @@ tm <- treemap(region_dat, index = c("party", "region"),
 
 ### `r last30days_string` (Last 7 days) {.tabset .tabset-fade .tabset-pills}
 
-#### Provinces
+<!-- #### Provinces -->
 
-```{r,fig.width=10, fig.height=8}
-library(treemap)
-region_dat <- election_dat7 %>%
-  filter(type == "location") %>%
-  filter(location_type == "regions") %>%
-  filter(is_exclusion)  %>%
-  mutate(likely_together = paste0(total_spend_pct,num_ads) %>% as.factor() %>% as.numeric()) %>%
-  group_by(internal_id) %>%
-  add_count(likely_together, name = "n_clusters") %>%
-  ungroup() %>%
-  mutate(total_spend_formatted = total_spend_formatted*total_spend_pct) %>%
-  mutate(total_spend_formatted = total_spend_formatted/n_clusters) %>%
-  group_by(party, value) %>%
-  summarise(total_spend_formatted = sum(total_spend_formatted),
-            num_ads = sum(num_ads)) %>%
-  ungroup() %>%
-  rename(region = value) %>%
-  mutate(region = str_remove_all(region, ", Turkey")) 
+<!-- ```{r,fig.width=10, fig.height=8, eval = F} -->
+<!-- library(treemap) -->
+<!-- region_dat <- election_dat7 %>% -->
+<!--   filter(type == "location") %>% -->
+<!--   filter(location_type == "regions") %>% -->
+<!--   filter(is_exclusion)  %>% -->
+<!--   mutate(likely_together = paste0(total_spend_pct,num_ads) %>% as.factor() %>% as.numeric()) %>% -->
+<!--   group_by(internal_id) %>% -->
+<!--   add_count(likely_together, name = "n_clusters") %>% -->
+<!--   ungroup() %>% -->
+<!--   mutate(total_spend_formatted = total_spend_formatted*total_spend_pct) %>% -->
+<!--   mutate(total_spend_formatted = total_spend_formatted/n_clusters) %>% -->
+<!--   group_by(party, value) %>% -->
+<!--   summarise(total_spend_formatted = sum(total_spend_formatted), -->
+<!--             num_ads = sum(num_ads)) %>% -->
+<!--   ungroup() %>% -->
+<!--   rename(region = value) %>% -->
+<!--   mutate(region = str_remove_all(region, ", Turkey"))  -->
 
-the_colors <- region_dat %>% 
-  group_by(party) %>% 
-  summarize(total_spend_formatted = sum(total_spend_formatted)) %>% 
-  ungroup() %>% 
-  mutate(party = fct_relevel(party)) %>% 
-  left_join(color_dat) %>% 
-  arrange(party) %>% 
-  drop_na(colors) %>% 
-  pull(colors)
+<!-- the_colors <- region_dat %>%  -->
+<!--   group_by(party) %>%  -->
+<!--   summarize(total_spend_formatted = sum(total_spend_formatted)) %>%  -->
+<!--   ungroup() %>%  -->
+<!--   mutate(party = fct_relevel(party)) %>%  -->
+<!--   left_join(color_dat) %>%  -->
+<!--   arrange(party) %>%  -->
+<!--   drop_na(colors) %>%  -->
+<!--   pull(colors) -->
 
-## Static version
-tm <- treemap(region_dat, index = c("party", "region"),
-              vSize = "total_spend_formatted", 
-              vColor = "party",
-              type = "index",
-              title = "",
-                  align.labels=list(
-        c("right", "bottom"),
-        c("center", "center")
-        ),
-                  fontsize.labels=c(21,10),                # size of labels. Give the size per level of aggregation: size for group, size for subgroup, sub-subgroups...
+<!-- ## Static version -->
+<!-- tm <- treemap(region_dat, index = c("party", "region"), -->
+<!--               vSize = "total_spend_formatted",  -->
+<!--               vColor = "party", -->
+<!--               type = "index", -->
+<!--               title = "", -->
+<!--                   align.labels=list( -->
+<!--         c("right", "bottom"), -->
+<!--         c("center", "center") -->
+<!--         ), -->
+<!--                   fontsize.labels=c(21,10),                # size of labels. Give the size per level of aggregation: size for group, size for subgroup, sub-subgroups... -->
 
-                  fontcolor.labels=c("white","white"),    # Color of labels
-              palette = the_colors)
+<!--                   fontcolor.labels=c("white","white"),    # Color of labels -->
+<!--               palette = the_colors) -->
 
 
 
-```
+<!-- ``` -->
 
 #### Cities
 
